@@ -1,5 +1,63 @@
 * {
+	box-sizing: border-box;
+	text-align: center;
+	background-color: #403075;
 	margin: 0;
 	padding: 0;
-	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+}
+
+h1 {
+	text-align: center;
+	color: #887CAF;
+}
+
+.users {
+	color: #887CAF;
+	font-weight: bold;
+	display: inline-block;
+	padding: 20px;
+}
+
+#userScore {
+	color: #7986AC;
+	font-weight: bold;
+	font-size: 20px;
+}
+
+#computerScore {
+	color: #7986AC;
+	font-weight: bold;
+	font-size: 20px;
+}
+
+.result {
+	color: #887CAF;
+	font-size: 40px;
+}
+
+.gameOver {
+	color: yellow;
+}
+
+.hide {
+	display: none;
+}
+
+button {
+	background-color: #261758 ;
+	color: white;
+	padding: 15px;
+	font-weight: bold;
+	width: 200px;
+}
+
+.letsplay p {
+	font-size: 30px;
+	color: #887CAF;
+	font-weight: bold;
 }
