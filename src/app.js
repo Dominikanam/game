@@ -4,8 +4,18 @@ var user = { score: 0, choice: '' };
 var computer = { score: 0, choice: '' };
 var bestOfNumber = 5;
 
-var userscore_span = document.getElementById ("userScore");
-var computerscore_span = document.getElementById ("computerScore");
+const rock = 0;
+const paper = 1;
+const scissors = 2;
+
+var setup = [
+	{ option: rock, label: 'ROCK', beats: scissors, looses: paper },
+	{ option: paper, label: 'PAPER', beats: rock, looses: scissors },
+	{ option: scissors, label: 'SCISSORS', beats: paper, looses: rock }
+];
+
+var userscore_span = document.getElementById("userScore");
+var computerscore_span = document.getElementById("computerScore");
 var result_div = document.querySelector(".result");
 
 var rockButton = document.getElementById('rockButton');
@@ -14,8 +24,7 @@ var scissorsButton = document.getElementById('scissorsButton');
 var resetButton = document.getElementById('resetButton');
 
 function getComputerChoice() {
-  var choices = ['ROCK', 'PAPER', 'SCISSORS'];
-  return choices[Math.floor(Math.random() * 5)];
+  return Math.floor(Math.random() * Math.floor(setup.length - 1));
 }
 
 function refreshScore() {
@@ -26,44 +35,34 @@ function refreshScore() {
 
 function win() {
   user.score++;
-  result_div.innerHTML = user.choice + " " + "BEATS" + " " + computer.choice + " " + "YOU WIN!";
+  result_div.innerHTML = user.choice.label + " " + "BEATS" + " " + computer.choice.label + " " + "YOU WIN!";
 }
 
 function lose() {
   computer.score++;
-  result_div.innerHTML = user.choice + " " + "LOSES" + " " + computer.choice + " " +  "YOU LOSE!";
+  result_div.innerHTML = user.choice.label + " " + "LOSES" + " " + computer.choice.label + " " +  "YOU LOSE!";
 }
 
 function draw() {
-  result_div.innerHTML = user.choice + " " + "EQUALS" + " " + computer.choice + " " +  "DRAW";
+  result_div.innerHTML = user.choice.label + " " + "EQUALS" + " " + computer.choice.label + " " +  "DRAW";
 }
 
-function game(userChoice) {
-  var computerChoice = getComputerChoice();
-  user.choice = userChoice;
-  computer.choice = computerChoice;
+function play(userChoice) {
+	var computerChoice = getComputerChoice();
+	console.log(userChoice, computerChoice);
+	user.choice = setup[userChoice];
+	computer.choice = setup[computerChoice];
 
+	if (user.choice === computer.choice) {
+		draw();
+	} else if (user.choice.beats === computer.choice.option) {
+		win();
+	} else {
+		lose();
+	}
 
-  switch (user.choice + " " + computer.choice) {
-    case "ROCK SCISSORS":
-    case "PAPER ROCK":
-    case "SCISSORS PAPER":
-      win();
-      break;
-    case "ROCK PAPER":
-    case "PAPER SCISSORS":
-    case "SCISSORS ROCK":
-      lose();
-      break;
-    case "ROCK ROCK":
-    case "PAPER PAPER":
-    case "SCISSORS SCISSORS":
-      draw();
-      break;
-  }
-
-  refreshScore();
-  checkBestOf();
+	refreshScore();
+	checkBestOf();
 }
 
 function restart() {
@@ -106,15 +105,15 @@ function gameOver(text) {
 /* NASŁUCHIWACZE */
 
 rockButton.addEventListener('click', function() {
-  game("ROCK");
+  play(rock);
 });
 
 paperButton.addEventListener('click', function() {
-   game("PAPER");
+   play(paper);
 });
 
 scissorsButton.addEventListener('click', function() {
-   game("SCISSORS");
+   play(scissors);
 });
 resetButton.addEventListener('click', function() {
   restart();
