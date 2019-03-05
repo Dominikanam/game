@@ -80,3 +80,18 @@ button {
 		}
 	}
 }
+
+table {
+	color: white;
+	border-spacing: 0;
+	border-collapse: collapse;
+	margin: 20px auto;
+
+	tr {
+		td, th {
+			border: 1px solid;
+			width: 100px;
+			height: 20px;
+		}
+	}
+}
