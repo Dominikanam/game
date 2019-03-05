@@ -1,61 +1,61 @@
-import world from './world';
+const options = {
+	rock: 0,
+	paper: 1,
+	scissors: 2
+};
 
-var user = { score: 0, choice: '' };
-var computer = { score: 0, choice: '' };
-var bestOfNumber = 5;
-
-const rock = 0;
-const paper = 1;
-const scissors = 2;
-
-var setup = [
-	{ option: rock, label: 'ROCK', beats: scissors, looses: paper },
-	{ option: paper, label: 'PAPER', beats: rock, looses: scissors },
-	{ option: scissors, label: 'SCISSORS', beats: paper, looses: rock }
-];
+const params = {
+	user: { score: 0, choice: null },
+	computer: { score: 0, choice: null },
+	bestOfNumber: 5,
+	setup: [
+		{ option: options.rock, label: 'ROCK', beats: options.scissors, looses: options.paper },
+		{ option: options.paper, label: 'PAPER', beats: options.rock, looses: options.scissors },
+		{ option: options.scissors, label: 'SCISSORS', beats: options.paper, looses: options.rock }
+	]
+};
 
 var userscore_span = document.getElementById("userScore");
 var computerscore_span = document.getElementById("computerScore");
 var result_div = document.querySelector(".result");
+var gameOverModal = document.getElementById("over");
 
-var rockButton = document.getElementById('rockButton');
-var paperButton = document.getElementById('paperButton');
-var scissorsButton = document.getElementById('scissorsButton');
+const choiceButtons = document.querySelectorAll('.playerMove');
 var resetButton = document.getElementById('resetButton');
 
 function getComputerChoice() {
-  return Math.floor(Math.random() * Math.floor(setup.length - 1));
+  const move = Math.floor(Math.random() * Math.floor(params.setup.length - 1));
+  return params.setup[move];
 }
 
 function refreshScore() {
-  userscore_span.innerHTML = user.score;
-  computerscore_span.innerHTML = computer.score;
+  userscore_span.innerHTML = params.user.score;
+  computerscore_span.innerHTML = params.computer.score;
 }
 
 
 function win() {
-  user.score++;
-  result_div.innerHTML = user.choice.label + " " + "BEATS" + " " + computer.choice.label + " " + "YOU WIN!";
+  params.user.score++;
+  result_div.innerHTML = params.user.choice.label + " " + "BEATS" + " " + params.computer.choice.label + " " + "YOU WIN!";
 }
 
 function lose() {
-  computer.score++;
-  result_div.innerHTML = user.choice.label + " " + "LOSES" + " " + computer.choice.label + " " +  "YOU LOSE!";
+  params.computer.score++;
+  result_div.innerHTML = params.user.choice.label + " " + "LOSES" + " " + params.computer.choice.label + " " +  "YOU LOSE!";
 }
 
 function draw() {
-  result_div.innerHTML = user.choice.label + " " + "EQUALS" + " " + computer.choice.label + " " +  "DRAW";
+  result_div.innerHTML = params.user.choice.label + " " + "EQUALS" + " " + params.computer.choice.label + " " +  "DRAW";
 }
 
-function play(userChoice) {
-	var computerChoice = getComputerChoice();
+function play(userChoice, computerChoice) {
+	params.user.choice = userChoice;
+	params.computer.choice = computerChoice;
 	console.log(userChoice, computerChoice);
-	user.choice = setup[userChoice];
-	computer.choice = setup[computerChoice];
 
-	if (user.choice === computer.choice) {
+	if (params.user.choice === params.computer.choice) {
 		draw();
-	} else if (user.choice.beats === computer.choice.option) {
+	} else if (params.user.choice.beats === params.computer.choice.option) {
 		win();
 	} else {
 		lose();
@@ -66,55 +66,52 @@ function play(userChoice) {
 }
 
 function restart() {
-  user.score = 0;
-  computer.score = 0;
+	params.user.score = 0;
+	params.computer.score = 0;
 
-  refreshScore();
+	refreshScore();
 
-  result_div.innerHTML = '';
-  result_div.classList.remove('gameOver');
+	result_div.innerHTML = '';
 
-  rockButton.classList.remove('hide');
-  paperButton.classList.remove('hide');
-  scissorsButton.classList.remove('hide');
-  resetButton.classList.add('hide');
+	choiceButtons.forEach(function(element) {
+		element.classList.remove('hide');
+	});
+
+	gameOverModal.classList.add('hide');
 }
 
 function checkBestOf() {
-  var winningScore = Math.max(user.score, computer.score);
-  var winningMargin = bestOfNumber / 2;
-  var gamesPlayed = user.score + computer.score;
+  var winningScore = Math.max(params.user.score, params.computer.score);
+  var winningMargin = params.bestOfNumber / 2;
+  var gamesPlayed = params.user.score + params.computer.score;
 
   if (winningScore > winningMargin) {
     gameOver('Game Over!');
-  } else if (gamesPlayed === bestOfNumber) {
+  } else if (gamesPlayed === params.bestOfNumber) {
     gameOver('Draw!');
   }
 }
 
 function gameOver(text) {
     result_div.innerHTML = text;
+    choiceButtons.forEach(function(element) {
+		element.classList.add('hide');
+	});
+	gameOverModal.classList.remove('hide');
+}
 
-    result_div.classList.add('gameOver');
-    rockButton.classList.add('hide');
-    paperButton.classList.add('hide');
-    scissorsButton.classList.add('hide');
-    resetButton.classList.remove('hide');
+function playerMove() {
+	const move = this.getAttribute('data-move');
+	const playerChoice = params.setup.find(function(item) { return item.label === move.toUpperCase() });
+	play(playerChoice, getComputerChoice());
 }
 
 /* NASŁUCHIWACZE */
 
-rockButton.addEventListener('click', function() {
-  play(rock);
+choiceButtons.forEach(function(element) {
+	element.addEventListener('click', playerMove);
 });
 
-paperButton.addEventListener('click', function() {
-   play(paper);
-});
-
-scissorsButton.addEventListener('click', function() {
-   play(scissors);
-});
 resetButton.addEventListener('click', function() {
   restart();
 });
