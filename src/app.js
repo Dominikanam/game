@@ -42,12 +42,21 @@ function updateProgress(isDraw) {
 		return;
 	}
 
+	var index = params.played - 1;
 	var rows = progressBody.querySelectorAll('tr');
-	updateProgressRow(rows[params.played - 1]);
-
-	if (isDraw) {
-		progressBody.innerHTML += '<tr><td></td><td></td><td></td></tr>';
+	var rowToEdit;
+	if (params.played > rows.length) {
+		rowToEdit = addProgressRow();
+		progressBody.appendChild(rowToEdit);
+	} else {
+		rowToEdit = rows[index];
 	}
+
+	updateProgressRow(rowToEdit);
+}
+
+function addProgressRow() {
+	return document.createElement('tr');
 }
 
 function updateProgressRow(row) {
